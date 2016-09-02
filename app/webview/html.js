@@ -37,7 +37,7 @@ const html =
 
       <div id="container"></div>
 
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/threejs/r76/three.min.js"></script>
       ${DeviceOrientationControls}
       ${RenderScene}
     </body>
