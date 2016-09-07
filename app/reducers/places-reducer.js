@@ -7,6 +7,7 @@ import { RESET_SEARCH } from '../actions/index';
 import { USER_PLACES } from '../actions/index';
 import { USER_EVENTS } from '../actions/index';
 import { RESET_PLACES_UPDATE } from '../actions/index';
+import { FORCE_PLACES_UPDATE } from '../actions/index';
 
 const initialState = {
   places: [],
@@ -72,14 +73,12 @@ export default function(state = initialState, action) {
         searchMode: action.payload
       };
     case USER_PLACES:
-      // console.log('USER_PLACES', action.payload);
       return {
         ...state,
         places: state.places.concat(action.payload),
         placeUpdate: true
       };
     case USER_EVENTS:
-      // console.log('USER_EVENTS', action.payload);
       return {
         ...state,
         places: state.places.concat([action.payload]),
@@ -89,6 +88,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         placeUpdate: false
+      };
+    case FORCE_PLACES_UPDATE:
+      return {
+        ...state,
+        placeUpdate: true
       };
     case UPDATE_PLACE_QUERY:
       return {

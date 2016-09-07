@@ -16,7 +16,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from '../actions/index';
 import uploadImage from '../lib/S3Upload';
-import Promise from "bluebird";
+import Promise from 'bluebird';
 
 
 //TODOs:

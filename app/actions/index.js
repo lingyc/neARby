@@ -1,5 +1,3 @@
-import { store } from '../../index.ios.js';
-
 export const PLACES_COLLECTION = 'PLACES_COLLECTION';
 export const DRAWER_TYPE = 'DRAWER_TYPE';
 export const SET_USER = 'SET_USER';
@@ -12,11 +10,12 @@ export const UPDATE_PLACE_QUERY = 'UPDATE_PLACE_QUERY';
 export const GET_DIRECTIONS = 'GET_DIRECTIONS';
 export const RESET_SEARCH = 'RESET_SEARCH';
 export const RESET_PLACES_UPDATE = 'RESET_PLACES_UPDATE';
+export const FORCE_PLACES_UPDATE = 'FORCE_PLACES_UPDATE';
 
 const herokuServer = 'https://agile-peak-45133.herokuapp.com/';
 const localServer = 'http://10.6.23.239:3000/';
-const server = localServer;
-const redisServer = localServer;
+const server = herokuServer;
+const redisServer = herokuServer;
 
 export const fetchPlaces = (position) => {
   let collection = fetch(`${server}location`, {
@@ -32,15 +31,14 @@ export const fetchPlaces = (position) => {
       // console.log('response', response);
       return response.json();
     } else  {
-      return [];
       console.log('error');
+      return [];
     }
   })
   .catch(function(error) {
     console.error(error);
     return [];
   });
-  // userPlacesQuery(position);
   return {
     type: PLACES_COLLECTION,
     payload: collection
@@ -103,75 +101,75 @@ export const eventQuery = (query) => {
   };
 };
 
-export const userEventQuery = (query) => {
-  // post request
-    let search = fetch(`${redisServer}db/getPlace`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(query)
-  })
-  .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
-    } else  {
-      return [];
-    }
-  })
-  .catch(function(error) {
-    console.error(error);
-    return [];
-  });
-  return {
-    type: USER_EVENTS,
-    payload: search
-  };
-};
+// export const userEventQuery = (query) => {
+//   // post request
+//     let search = fetch(`${redisServer}db/getPlace`, {
+//     method: 'POST',
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(query)
+//   })
+//   .then(function(response) {
+//     if (response.status === 200) {
+//       return response.json();
+//     } else  {
+//       return [];
+//     }
+//   })
+//   .catch(function(error) {
+//     console.error(error);
+//     return [];
+//   });
+//   return {
+//     type: USER_EVENTS,
+//     payload: search
+//   };
+// };
 
-export const userPlacesQuery = (query) => {
-  // post request
-  // console.log('test the user place query out')
-    let search = fetch(`${redisServer}db/getPlaces`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(query)
-  })
-  .then(function(response) {
-    if (response.status === 200) {
-      return response.json();
-    } else  {
-      return [];
-    }
-  })
-  .catch(function(error) {
-    console.error(error);
-    return [];
-  });
-  // console.log('testing userPlaceQuery', search);
-  return {
-    type: USER_PLACES,
-    payload: search
-  };
-};
+// export const userPlacesQuery = (query) => {
+//   // post request
+//   // console.log('test the user place query out')
+//     let search = fetch(`${redisServer}db/getPlaces`, {
+//     method: 'POST',
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(query)
+//   })
+//   .then(function(response) {
+//     if (response.status === 200) {
+//       return response.json();
+//     } else  {
+//       return [];
+//     }
+//   })
+//   .catch(function(error) {
+//     console.error(error);
+//     return [];
+//   });
+//   // console.log('testing userPlaceQuery', search);
+//   return {
+//     type: USER_PLACES,
+//     payload: search
+//   };
+// };
 
 export const updatePlaceQuery = (query) => {
   return {
     type: UPDATE_PLACE_QUERY,
     payload: query
-  }
-}
+  };
+};
 
 export const updateEventQuery = (query) => {
   return {
     type: UPDATE_EVENT_QUERY,
     payload: query
-  }
-}
+  };
+};
 
 export const imageQuery = (query) => {
   // post request
@@ -227,13 +225,11 @@ export const directionsQuery = (query) => {
   };
 };
 
-export const drawerState = (option, isOpen) => {
-  // isOpen = isOpen ? !store.getState.drawerState.isOpen :  store.getState.drawerState.isOpen;
+export const drawerState = (option) => {
   return {
     type: DRAWER_TYPE,
     payload: {
       option: option,
-      // isOpen: isOpen
     }
   };
 };
@@ -275,6 +271,13 @@ export const resetPlaceUpdate = () => {
   return {
     type: RESET_PLACES_UPDATE,
     payload: false
+  };
+};
+
+export const forcePlaceUpdate = () => {
+  return {
+    type: FORCE_PLACES_UPDATE,
+    payload: true
   };
 };
 
@@ -325,30 +328,38 @@ export const USER_PLACES = 'USER_PLACES';
 export const USER_EVENTS = 'USER_EVENTS';
 
 export const addPlace = (place) => {
-  let search = fetch(`${redisServer}db/createPlace`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(place)
-  })
-  .then(function(response) {
-    if (response.status === 200) {
-      // console.log('testing addPlace', search);
-      return response.json();
-    } else  {
-      console.log('error adding Places: ', response);
-    }
-  })
-  .catch(function(error) {
-    console.error('error adding Places: ', error);
-  });
   return {
     type: USER_PLACES,
-    payload: search
+    payload: place
   };
 };
+
+// ajax call to store obj, disabled until redist server is properly deployed and connected to main server
+// export const addPlace = (place) => {
+//   let search = fetch(`${redisServer}db/createPlace`, {
+//     method: 'POST',
+//     headers: {
+//       'Accept': 'application/json',
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(place)
+//   })
+//   .then(function(response) {
+//     if (response.status === 200) {
+//       // console.log('testing addPlace', search);
+//       return response.json();
+//     } else  {
+//       console.log('error adding Places: ', response);
+//     }
+//   })
+//   .catch(function(error) {
+//     console.error('error adding Places: ', error);
+//   });
+//   return {
+//     type: USER_PLACES,
+//     payload: search
+//   };
+// };
 
 export const addEvent = (event) => {
     let search = fetch(`${redisServer}db/createEvent`, {

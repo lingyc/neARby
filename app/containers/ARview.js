@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   View,
   TouchableOpacity,
   Image,
-  Text,
   DeviceEventEmitter //DeviceEventEmitter is imported for geolocation update
 } from 'react-native';
 
@@ -70,15 +68,17 @@ class ARcomponent extends Component {
     Location.requestWhenInUseAuthorization();
     Location.setDesiredAccuracy(1);
     Location.setDistanceFilter(1);
+    Location.startUpdatingHeading();
+    Location.startUpdatingLocation();
   }
 
   sendOrientation(callback, intialize) {
     //heading is the orientation of device relative to true north
-    Location.startUpdatingHeading();
     this.getHeading = DeviceEventEmitter.addListener(
       'headingUpdated',
       (data) => {
         this.setState({currentHeading: data.heading});
+        // console.log('heading', data.heading);
         callback(data.heading);
       }
     );
@@ -86,7 +86,6 @@ class ARcomponent extends Component {
 
   //initGeolocation gets the initial geolocation and set it to initialPosition state
   initGeolocation(initialCameraAngleCallback) {
-    Location.startUpdatingLocation();
     //this will listen to geolocation changes and update it in state
     this.getInitialLocation = DeviceEventEmitter.addListener(
       'locationUpdated',
@@ -281,16 +280,7 @@ class ARcomponent extends Component {
     this.props.action.switchARImageMode(false);
     this.props.action.insideARImageMode(false);
     this.props.action.openPreview(this.props.focalPlace);
-
-    let positionObj = {
-      latitude: this.props.currentPosition.latitude,
-      longitude: this.props.currentPosition.longitude,
-      threejsLat: this.props.threejsLat,
-      threejsLon: this.props.threejsLon
-    };
-
-
-    this.props.action.fetchPlaces(positionObj)
+    this.props.action.forcePlaceUpdate();
   }
 
   renderARImageModeCloseBtn() {
